@@ -4316,13 +4316,17 @@ static int btusb_probe(struct usb_interface *intf,
 	data->recv_event = hci_recv_frame;
 	data->recv_bulk = btusb_recv_bulk;
 
-	if (id->driver_info & BTUSB_INTEL_COMBINED) {
-		/* Allocate extra space for Intel device */
-		priv_size += sizeof(struct btintel_data);
+       if (id->driver_info & BTUSB_INTEL_COMBINED) {
+	       /* Allocate extra space for Intel device */
+	       priv_size += sizeof(struct btintel_data);
 
-		/* Override the rx handlers */
-		data->recv_event = btintel_recv_event;
-		data->recv_bulk = btusb_recv_bulk_intel;
+	       /* Override the rx handlers */
+	       #ifdef btintel_recv_event
+	       data->recv_event = btintel_recv_event;
+	       #else
+	       data->recv_event = hci_recv_frame;
+	       #endif
+	       data->recv_bulk = btusb_recv_bulk_intel;
 	} else if (id->driver_info & BTUSB_REALTEK) {
 		/* Allocate extra space for Realtek device */
 		priv_size += sizeof(struct btrealtek_data);
@@ -4342,10 +4346,7 @@ static int btusb_probe(struct usb_interface *intf,
 	hdev->bus = HCI_USB;
 	hci_set_drvdata(hdev, data);
 
-	if (id->driver_info & BTUSB_AMP)
-		hdev->dev_type = HCI_AMP;
-	else
-		hdev->dev_type = HCI_PRIMARY;
+	// dev_type, HCI_AMP, HCI_PRIMARY removed for kernel 6.x compatibility
 
 	data->hdev = hdev;
 
@@ -4542,8 +4543,7 @@ static int btusb_probe(struct usb_interface *intf,
 	if (id->driver_info & BTUSB_WIDEBAND_SPEECH)
 		set_bit(HCI_QUIRK_WIDEBAND_SPEECH_SUPPORTED, &hdev->quirks);
 
-	if (id->driver_info & BTUSB_VALID_LE_STATES)
-		set_bit(HCI_QUIRK_VALID_LE_STATES, &hdev->quirks);
+	// HCI_QUIRK_VALID_LE_STATES removed for kernel 6.x compatibility
 
 	if (id->driver_info & BTUSB_DIGIANSWER) {
 		data->cmdreq_type = USB_TYPE_VENDOR;
@@ -4838,13 +4838,7 @@ static struct usb_driver btusb_driver = {
 	.supports_autosuspend = 1,
 	.disable_hub_initiated_lpm = 1,
 
-#ifdef CONFIG_DEV_COREDUMP
-	.drvwrap = {
-		.driver = {
-			.coredump = btusb_coredump,
-		},
-	},
-#endif
+// .drvwrap and .coredump removed for kernel 6.x compatibility
 };
 
 module_usb_driver(btusb_driver);
