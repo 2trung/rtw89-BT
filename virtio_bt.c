@@ -30,9 +30,6 @@ static int virtbt_add_inbuf(struct virtio_bluetooth *vbt)
 {
 	struct virtqueue *vq = vbt->vqs[VIRTBT_VQ_RX];
 	struct scatterlist sg[1];
-	// .driver.owner        = THIS_MODULE, // removed for kernel 6.x compatibility
-	.driver.name = "virtio_bt",
-	.driver.bus = &virtio_bus_type,
 	struct sk_buff *skb;
 	int err;
 

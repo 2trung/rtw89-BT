@@ -132,67 +132,20 @@ struct btrealtek_data {
 
 #define btrealtek_test_flag(hdev, nr)	test_bit((nr), btrealtek_get_flag(hdev))
 
-#if IS_ENABLED(CONFIG_BT_RTL)
-
+/* Out-of-tree build: always provide real function prototypes to match
+ * implementations in btrtl.c and avoid inline stub redefinitions.
+ */
 struct btrtl_device_info *btrtl_initialize(struct hci_dev *hdev,
-					   const char *postfix);
+										   const char *postfix);
 void btrtl_free(struct btrtl_device_info *btrtl_dev);
 int btrtl_download_firmware(struct hci_dev *hdev,
-			    struct btrtl_device_info *btrtl_dev);
+							struct btrtl_device_info *btrtl_dev);
 void btrtl_set_quirks(struct hci_dev *hdev,
-		      struct btrtl_device_info *btrtl_dev);
+					  struct btrtl_device_info *btrtl_dev);
 int btrtl_setup_realtek(struct hci_dev *hdev);
 int btrtl_shutdown_realtek(struct hci_dev *hdev);
 int btrtl_get_uart_settings(struct hci_dev *hdev,
-			    struct btrtl_device_info *btrtl_dev,
-			    unsigned int *controller_baudrate,
-			    u32 *device_baudrate, bool *flow_control);
+							struct btrtl_device_info *btrtl_dev,
+							unsigned int *controller_baudrate,
+							u32 *device_baudrate, bool *flow_control);
 void btrtl_set_driver_name(struct hci_dev *hdev, const char *driver_name);
-
-#else
-
-static inline struct btrtl_device_info *btrtl_initialize(struct hci_dev *hdev,
-							 const char *postfix)
-{
-	return ERR_PTR(-EOPNOTSUPP);
-}
-
-static inline void btrtl_free(struct btrtl_device_info *btrtl_dev)
-{
-}
-
-static inline int btrtl_download_firmware(struct hci_dev *hdev,
-					  struct btrtl_device_info *btrtl_dev)
-{
-	return -EOPNOTSUPP;
-}
-
-static inline void btrtl_set_quirks(struct hci_dev *hdev,
-				    struct btrtl_device_info *btrtl_dev)
-{
-}
-
-static inline int btrtl_setup_realtek(struct hci_dev *hdev)
-{
-	return -EOPNOTSUPP;
-}
-
-static inline int btrtl_shutdown_realtek(struct hci_dev *hdev)
-{
-	return -EOPNOTSUPP;
-}
-
-static inline int btrtl_get_uart_settings(struct hci_dev *hdev,
-					  struct btrtl_device_info *btrtl_dev,
-					  unsigned int *controller_baudrate,
-					  u32 *device_baudrate,
-					  bool *flow_control)
-{
-	return -ENOENT;
-}
-
-static inline void btrtl_set_driver_name(struct hci_dev *hdev, const char *driver_name)
-{
-}
-
-#endif

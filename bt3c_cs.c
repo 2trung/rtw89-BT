@@ -2,9 +2,6 @@
  *
  *  Driver for the 3Com Bluetooth PCMCIA card
  *
-	// .owner          = THIS_MODULE, // removed for kernel 6.x compatibility
-	.name = "bt3c_cs",
-	.bus = &bt3c_bus_type,
  *  Copyright (C) 2001-2002  Marcel Holtmann <marcel@holtmann.org>
  *                           Jose Orlando Pereira <jop@di.uminho.pt>
  *

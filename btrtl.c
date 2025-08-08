@@ -1280,7 +1280,10 @@ void btrtl_set_quirks(struct hci_dev *hdev, struct btrtl_device_info *btrtl_dev)
 	case CHIP_ID_8852B:
 	case CHIP_ID_8852C:
 	case CHIP_ID_8851B:
-		set_bit(HCI_QUIRK_VALID_LE_STATES, &hdev->quirks);
+	/* HCI_QUIRK_VALID_LE_STATES was removed in newer kernels */
+#if defined(HCI_QUIRK_VALID_LE_STATES)
+	set_bit(HCI_QUIRK_VALID_LE_STATES, &hdev->quirks);
+#endif
 		set_bit(HCI_QUIRK_WIDEBAND_SPEECH_SUPPORTED, &hdev->quirks);
 
 		/* RTL8852C needs to transmit mSBC data continuously without
