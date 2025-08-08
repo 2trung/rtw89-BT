@@ -7,7 +7,7 @@
 
 #include <linux/module.h>
 #include <linux/firmware.h>
-#include <linux/unaligned.h>
+#include <asm/unaligned.h>
 #include <linux/usb.h>
 #include <linux/version.h>
 

@@ -17,7 +17,7 @@
 #include <linux/pci.h>
 #include <linux/printk.h>
 
-#include <linux/unaligned.h>
+#include <asm/unaligned.h>
 
 #include <net/bluetooth/bluetooth.h>
 #include <net/bluetooth/hci_core.h>
