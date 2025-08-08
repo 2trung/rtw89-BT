@@ -2,6 +2,9 @@
  *
  *  A driver for Nokia Connectivity Card DTL-1 devices
  *
+	// .owner          = THIS_MODULE, // removed for kernel 6.x compatibility
+	.name = "dtl1_cs",
+	.bus = &dtl1_bus_type,
  *  Copyright (C) 2001-2002  Marcel Holtmann <marcel@holtmann.org>
  *
  *

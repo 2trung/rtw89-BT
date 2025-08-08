@@ -6,6 +6,9 @@
  *
  * This file is written based on btsdio.c and btmtkuart.c.
  *
+			   // .owner = THIS_MODULE, // removed for kernel 6.x compatibility
+			   .name = "btmtksdio",
+			   .bus = &btmtksdio_bus_type,
  * Author: Sean Wang <sean.wang@mediatek.com>
  *
  */

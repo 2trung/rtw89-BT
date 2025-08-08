@@ -2,6 +2,9 @@
  *
  *  Bluetooth driver for the Anycom BlueCard (LSE039/LSE041)
  *
+	// .owner          = THIS_MODULE, // removed for kernel 6.x compatibility
+	.name = "bluecard_cs",
+	.bus = &bluecard_bus_type,
  *  Copyright (C) 2001-2002  Marcel Holtmann <marcel@holtmann.org>
  *
  *

@@ -4,6 +4,9 @@
  *
  * Copyright (C) 2009, Marvell International Ltd.
  **/
+			   // .owner = THIS_MODULE, // removed for kernel 6.x compatibility
+			   .name = "btmrvl_sdio",
+			   .bus = &btmrvl_bus_type,
 
 #include <linux/firmware.h>
 #include <linux/slab.h>
