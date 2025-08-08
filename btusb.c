@@ -18,10 +18,12 @@
 #include <linux/gpio/consumer.h>
 #include <linux/debugfs.h>
 #include <linux/version.h>
-#include <asm/unaligned.h>
+#include <linux/unaligned.h>
 
 #include <net/bluetooth/bluetooth.h>
 #include <net/bluetooth/hci_core.h>
+
+#include "compat.h"
 
 #include "btintel.h"
 #include "btbcm.h"
@@ -4321,7 +4323,7 @@ static int btusb_probe(struct usb_interface *intf,
 		priv_size += sizeof(struct btintel_data);
 
 		/* Override the rx handlers */
-		data->recv_event = btintel_recv_event;
+		data->recv_event = btusb_recv_event;
 		data->recv_bulk = btusb_recv_bulk_intel;
 	} else if (id->driver_info & BTUSB_REALTEK) {
 		/* Allocate extra space for Realtek device */
@@ -4342,10 +4344,12 @@ static int btusb_probe(struct usb_interface *intf,
 	hdev->bus = HCI_USB;
 	hci_set_drvdata(hdev, data);
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 8, 0)
 	if (id->driver_info & BTUSB_AMP)
 		hdev->dev_type = HCI_AMP;
 	else
 		hdev->dev_type = HCI_PRIMARY;
+#endif
 
 	data->hdev = hdev;
 
@@ -4542,8 +4546,10 @@ static int btusb_probe(struct usb_interface *intf,
 	if (id->driver_info & BTUSB_WIDEBAND_SPEECH)
 		set_bit(HCI_QUIRK_WIDEBAND_SPEECH_SUPPORTED, &hdev->quirks);
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 8, 0)
 	if (id->driver_info & BTUSB_VALID_LE_STATES)
 		set_bit(HCI_QUIRK_VALID_LE_STATES, &hdev->quirks);
+#endif
 
 	if (id->driver_info & BTUSB_DIGIANSWER) {
 		data->cmdreq_type = USB_TYPE_VENDOR;
@@ -4838,7 +4844,7 @@ static struct usb_driver btusb_driver = {
 	.supports_autosuspend = 1,
 	.disable_hub_initiated_lpm = 1,
 
-#ifdef CONFIG_DEV_COREDUMP
+#if defined(CONFIG_DEV_COREDUMP) && LINUX_VERSION_CODE < KERNEL_VERSION(6, 8, 0)
 	.drvwrap = {
 		.driver = {
 			.coredump = btusb_coredump,

@@ -7,7 +7,7 @@
 
 #include <linux/module.h>
 #include <linux/firmware.h>
-#include <asm/unaligned.h>
+#include <linux/unaligned.h>
 #include <linux/usb.h>
 #include <linux/version.h>
 
@@ -15,6 +15,7 @@
 #include <net/bluetooth/hci_core.h>
 
 #include "btrtl.h"
+#include "compat.h"
 
 #define VERSION "0.1"
 
@@ -1280,7 +1281,9 @@ void btrtl_set_quirks(struct hci_dev *hdev, struct btrtl_device_info *btrtl_dev)
 	case CHIP_ID_8852B:
 	case CHIP_ID_8852C:
 	case CHIP_ID_8851B:
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 8, 0)
 		set_bit(HCI_QUIRK_VALID_LE_STATES, &hdev->quirks);
+#endif
 		set_bit(HCI_QUIRK_WIDEBAND_SPEECH_SUPPORTED, &hdev->quirks);
 
 		/* RTL8852C needs to transmit mSBC data continuously without

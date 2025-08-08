@@ -11,12 +11,13 @@
 #include <linux/regmap.h>
 #include <linux/acpi.h>
 #include <acpi/acpi_bus.h>
-#include <asm/unaligned.h>
+#include <linux/unaligned.h>
 
 #include <net/bluetooth/bluetooth.h>
 #include <net/bluetooth/hci_core.h>
 
 #include "btintel.h"
+#include "compat.h"
 
 #define VERSION "0.1"
 
@@ -2766,9 +2767,11 @@ static int btintel_setup_combined(struct hci_dev *hdev)
 					       INTEL_ROM_LEGACY_NO_WBS_SUPPORT))
 				set_bit(HCI_QUIRK_WIDEBAND_SPEECH_SUPPORTED,
 					&hdev->quirks);
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 8, 0)
 			if (ver.hw_variant == 0x08 && ver.fw_variant == 0x22)
 				set_bit(HCI_QUIRK_VALID_LE_STATES,
 					&hdev->quirks);
+#endif
 
 			err = btintel_legacy_rom_setup(hdev, &ver);
 			break;
@@ -2777,7 +2780,9 @@ static int btintel_setup_combined(struct hci_dev *hdev)
 		case 0x12:      /* ThP */
 		case 0x13:      /* HrP */
 		case 0x14:      /* CcP */
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 8, 0)
 			set_bit(HCI_QUIRK_VALID_LE_STATES, &hdev->quirks);
+#endif
 			fallthrough;
 		case 0x0c:	/* WsP */
 			/* Apply the device specific HCI quirks
@@ -2864,8 +2869,10 @@ static int btintel_setup_combined(struct hci_dev *hdev)
 		/* These variants don't seem to support LE Coded PHY */
 		set_bit(HCI_QUIRK_BROKEN_LE_CODED, &hdev->quirks);
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 8, 0)
 		/* Set Valid LE States quirk */
 		set_bit(HCI_QUIRK_VALID_LE_STATES, &hdev->quirks);
+#endif
 
 		/* Setup MSFT Extension support */
 		btintel_set_msft_opcode(hdev, ver.hw_variant);
@@ -2887,8 +2894,10 @@ static int btintel_setup_combined(struct hci_dev *hdev)
 		 */
 		set_bit(HCI_QUIRK_WIDEBAND_SPEECH_SUPPORTED, &hdev->quirks);
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 8, 0)
 		/* Apply LE States quirk from solar onwards */
 		set_bit(HCI_QUIRK_VALID_LE_STATES, &hdev->quirks);
+#endif
 
 		/* Setup MSFT Extension support */
 		btintel_set_msft_opcode(hdev,
